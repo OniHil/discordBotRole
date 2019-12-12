@@ -3,6 +3,8 @@ var fs = require('fs');
 var Discord = require('discord.js');
 var mongoose = require('mongoose');
 
+var config = require('./config.json');
+
 var client = new Discord.Client();
 client.commands = new Discord.Collection();
 
@@ -13,8 +15,8 @@ mongoose.connect('mongodb://localhost/discordMembers', {
 });
 
 var db = mongoose.connection;
-var token = 'NjU0MDU3MzIwMTQxMjkxNTQx.XfAX9Q.VeFRChW8W92l39-SijuM6vP33oU';
-var prefix = '!';
+var token = config.token;
+var prefix = config.prefix;
 var commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 var allRoles = [];
@@ -66,7 +68,7 @@ client.on('guildMemberUpdate', (oldMember, newMember) => {
 
     if (oldMember._roles == newMember._roles) {
         return;
-    } else if (oldMember._roles < newMember._roles) { // added
+    } else if (oldMember._roles < newMember._roles) {
         for (var Ri = 0; Ri < newMember._roles.length; Ri++) {
             matchedNewRole = allRoles.filter(role => {
                 return role.id == newMember._roles[Ri];
@@ -77,7 +79,7 @@ client.on('guildMemberUpdate', (oldMember, newMember) => {
             });
             changeRoles(newMember.id);
         }
-    } else if (oldMember._roles > newMember._roles) { // removed
+    } else if (oldMember._roles > newMember._roles) {
         for (var Ri = 0; Ri < oldMember._roles.length; Ri++) {
             matchedRemovedRole = allRoles.filter(role => {
                 return role.id == oldMember._roles[Ri];
@@ -105,9 +107,6 @@ function changeRoles(userID) {
                 }
             }, function (err) {
                 if (err) throw err;
-                else {
-                    console.log('Role removed.');
-                }
             });
         }
     }
@@ -125,9 +124,6 @@ function changeRoles(userID) {
                 }
             }, function (err) {
                 if (err) throw err;
-                else {
-                    console.log('Role added.');
-                }
             });
         }
     }
