@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 var mongoose = require('mongoose');
 
 var Members = require('../model/member.js');
@@ -22,7 +22,7 @@ function listMembers(message) {
 
 function listMembersBasedOnRole(message, args) {
     mongoose.model('Member').find({
-        "roles.name": args
+        'roles.name': args
     }, function (err, foundMembers) {
         if (err)
             throw err;
