@@ -7,8 +7,9 @@ yarn-error.log*
 lerna-debug.log*
 
 # Configfiles
+.vscode
 config.json
-.jshintrc
+.eslintrc
 
 # Test data
 test
