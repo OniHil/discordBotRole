@@ -18,6 +18,7 @@ mongoose.connect('mongodb://localhost/discordMembers', {
 var db = mongoose.connection;
 var token = config.token;
 var prefix = config.prefix;
+var adminRole = config.adminRole;
 var commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 var allRoles = [];
@@ -54,7 +55,7 @@ client.once('message', message => {
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    var role = message.member.roles.find(role => role.name === 'mod');
+    var role = message.member.roles.find(role => role.name === adminRole);
     if (role === null) return;
 
     var args = message.content.slice(prefix.length).split(/ +/);
