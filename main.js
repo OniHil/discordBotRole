@@ -4,6 +4,7 @@ var Discord = require('discord.js');
 var mongoose = require('mongoose');
 
 var config = require('./config.json');
+var Members = require('./model/member.js');
 
 var client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -44,6 +45,10 @@ client.once('ready', () => {
             allRoles.push({ name: role.name, id: role.id });
         });
     });
+});
+
+client.once('message', message => {
+    client.commands.get('init').execute(message);
 });
 
 client.on('message', message => {
@@ -89,6 +94,25 @@ client.on('guildMemberUpdate', (oldMember, newMember) => {
             changeRoles(newMember.id);
         }
     }
+});
+
+client.on('guildMemberAdd', GuildMember => {
+    mongoose.model('Member').find({
+        discordID: GuildMember.id
+    }, function (err, foundMember) {
+        if (err) {
+            throw err;
+        } else if (foundMember.lenght === 0) {
+            var Member = new Members({
+                name: GuildMember.user.username,
+                discordID: GuildMember.id
+            });
+
+            Member.save(function (err) {
+                if (err) throw err;
+            });
+        }
+    });
 });
 
 function changeRoles(userID) {

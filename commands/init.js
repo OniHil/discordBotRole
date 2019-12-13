@@ -7,11 +7,11 @@ module.exports = {
     name: 'init',
     description: 'List memebers',
     execute(message, args) {
-        findUsers(message, args);
+        findUsers(message);
     }
 };
 
-function findUsers(message, args) {
+function findUsers(message) {
     message.guild.fetchMembers().then((guild) => {
         guild.members.forEach(member => {
             mongoose.model('Member').find({
