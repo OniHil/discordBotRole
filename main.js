@@ -49,8 +49,8 @@ client.once('ready', () => {
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    var role = message.member.roles.find(role => role.name == 'mod');
-    if (role == null) return;
+    var role = message.member.roles.find(role => role.name === 'mod');
+    if (role === null) return;
 
     var args = message.content.slice(prefix.length).split(/ +/);
     var command = args.shift().toLowerCase();
@@ -66,27 +66,25 @@ client.on('guildMemberUpdate', (oldMember, newMember) => {
     matchedNewRole = [];
     matchedRemovedRole = [];
 
-    if (oldMember._roles == newMember._roles) {
-        return;
-    } else if (oldMember._roles < newMember._roles) {
-        for (var Ri = 0; Ri < newMember._roles.length; Ri++) {
-            matchedNewRole = allRoles.filter(role => {
-                return role.id == newMember._roles[Ri];
-            });
-            newRoles.push({
-                id: matchedNewRole[0].id,
-                name: matchedNewRole[0].name
-            });
-            changeRoles(newMember.id);
-        }
-    } else if (oldMember._roles > newMember._roles) {
-        for (var Ri = 0; Ri < oldMember._roles.length; Ri++) {
+    if (oldMember._roles > newMember._roles) {
+        for (var rRi = 0; rRi < oldMember._roles.length; rRi++) {
             matchedRemovedRole = allRoles.filter(role => {
-                return role.id == oldMember._roles[Ri];
+                return role.id === oldMember._roles[rRi];
             });
             removedRoles.push({
                 id: matchedRemovedRole[0].id,
                 name: matchedRemovedRole[0].name
+            });
+            changeRoles(newMember.id);
+        }
+    } else if (oldMember._roles < newMember._roles) {
+        for (var nRi = 0; nRi < newMember._roles.length; nRi++) {
+            matchedNewRole = allRoles.filter(role => {
+                return role.id === newMember._roles[nRi];
+            });
+            newRoles.push({
+                id: matchedNewRole[0].id,
+                name: matchedNewRole[0].name
             });
             changeRoles(newMember.id);
         }
@@ -97,7 +95,7 @@ function changeRoles(userID) {
     if (removedRoles.length > 0) {
         for (var rRi = 0; rRi < removedRoles.length; rRi++) {
             mongoose.model('Member').updateOne({
-                discordID: userID,
+                discordID: userID
             }, {
                 $pull: {
                     roles: {
@@ -114,7 +112,7 @@ function changeRoles(userID) {
     if (newRoles.length > 0) {
         for (var nRi = 0; nRi < newRoles.length; nRi++) {
             mongoose.model('Member').updateOne({
-                discordID: userID,
+                discordID: userID
             }, {
                 $push: {
                     roles: {

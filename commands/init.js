@@ -8,7 +8,7 @@ module.exports = {
     description: 'List memebers',
     execute(message, args) {
         findUsers(message, args);
-    },
+    }
 };
 
 function findUsers(message, args) {
@@ -19,9 +19,7 @@ function findUsers(message, args) {
             }, function (err, foundMembers) {
                 if (err) {
                     throw err;
-                } else if (foundMembers.length > 0) {
-                    return;
-                } else {
+                } else if (foundMembers.length < 1) {
                     createUser(member);
                 }
             });
@@ -33,12 +31,11 @@ function findUsers(message, args) {
 function createUser(member) {
     var Member = new Members({
         name: member.user.tag,
-        discordID: member.id,
+        discordID: member.id
     });
 
     member.roles.forEach(role => {
         Member.roles.push({ id: role.id, name: role.name });
-
     });
 
     Member.save(function (err) {

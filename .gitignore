@@ -9,7 +9,7 @@ lerna-debug.log*
 # Configfiles
 .vscode
 config.json
-.eslintrc
+.eslintrc.*
 
 # Test data
 test
